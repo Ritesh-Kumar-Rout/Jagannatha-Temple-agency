@@ -1,0 +1,58 @@
+/* foldingCalendar.css */
+
+.perspective {
+    perspective: 1200px;
+  }
+  
+  .folding-wrapper {
+    width: 100%;
+    transform-style: preserve-3d;
+  }
+  
+  .calendar-card {
+    transition: transform 2s ease-in-out;
+    transform-style: preserve-3d;
+  }
+  
+  .fold-open .calendar-card {
+    transform: rotateX(0deg);
+  }
+  
+  .fold-close .calendar-card {
+    transform: rotateX(180deg);
+  }
+  
+  .dramatic-fold {
+    transition: transform 2s ease-in-out;
+  }
+  
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  
+  /* Optional: smoother visuals on calendar cards */
+  .calendar {
+    transition: background 0.3s, transform 0.3s;
+  }
+  
+  .calendar-card .calendar {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .calendar h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .calendar div.grid {
+    margin-top: 0.5rem;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .dramatic-fold {
+      transition: none !important;
+    }
+  }
+  

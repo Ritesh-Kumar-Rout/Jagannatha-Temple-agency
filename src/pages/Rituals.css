@@ -1,0 +1,374 @@
+/* Base Styles */
+:root {
+  --primary-color: #e67e22;
+  --primary-dark: #d35400;
+  --secondary-color: #ffd700;
+  --light-bg: #fff9e6;
+  --card-bg: #fbf5bf;
+  --dark-text: #333;
+  --medium-text: #666;
+  --light-text: #f5f5f5;
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --border-radius: 10px;
+  --transition: all 0.3s ease;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5;
+  color: var(--dark-text);
+  line-height: 1.6;
+}
+
+.temple-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+              url('Jagannath-Rath-Yatra-Puri-rituals.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--light-text);
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.hero-overlay {
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  color: var(--secondary-color);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.3rem;
+  margin-bottom: 0;
+  opacity: 0.9;
+}
+
+/* Main Content */
+.container {
+  padding: 0 2rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--primary-dark);
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 3px;
+  background: var(--primary-color);
+  margin: 0.5rem auto;
+}
+
+/* Rituals Grid */
+.rituals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.ritual-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.8rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(230, 126, 34, 0.2);
+}
+
+.ritual-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.ritual-card.expanded {
+  background: var(--light-bg);
+  min-height: 300px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.emoji {
+  font-size: 2.2rem;
+  margin-right: 1.2rem;
+}
+
+.ritual-card h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--primary-dark);
+}
+
+.short-desc {
+  color: var(--medium-text);
+  margin-bottom: 1.2rem;
+  flex-grow: 1;
+  font-size: 0.95rem;
+}
+
+.card-details {
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(239, 171, 112, 0.3);
+  margin-top: 1rem;
+}
+
+.card-details p {
+  white-space: pre-line;
+  margin-bottom: 1.5rem;
+}
+
+.learn-more-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+  align-self: flex-start;
+  font-weight: 500;
+}
+
+.learn-more-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 2.5rem;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  color: var(--primary-dark);
+  margin-bottom: 1.5rem;
+  padding-right: 2rem;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--dark-text);
+  transition: var(--transition);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-btn:hover {
+  background: #f0f0f0;
+  color: var(--primary-dark);
+}
+
+.modal-body {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-image-container {
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: var(--shadow);
+}
+
+.ritual-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.ritual-image:hover {
+  transform: scale(1.03);
+}
+
+.image-placeholder {
+  height: 100%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--medium-text);
+  font-style: italic;
+}
+
+.modal-text-content p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.timing-info {
+  background: #faf9f9;
+  padding: 1.2rem;
+  border-radius: 5px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.timing-info h4 {
+  margin-top: 0;
+  color: var(--primary-dark);
+}
+
+/* Footer */
+.app-footer {
+  background: #222;
+  color: var(--light-text);
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 3rem;
+}
+
+.app-footer p {
+  margin: 0.5rem 0;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero {
+    height: 280px;
+  }
+  
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+  }
+  
+  .rituals-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .modal-content {
+    padding: 1.8rem;
+  }
+  
+  .modal-image-container {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 240px;
+  }
+  
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  
+  .ritual-card {
+    padding: 1.3rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+    width: 95%;
+  }
+  
+  .close-btn {
+    top: 0.8rem;
+    right: 0.8rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-overlay {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.ritual-card {
+  animation: fadeIn 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Delay for grid items */
+.rituals-grid .ritual-card:nth-child(1) { animation-delay: 0.1s; }
+.rituals-grid .ritual-card:nth-child(2) { animation-delay: 0.2s; }
+.rituals-grid .ritual-card:nth-child(3) { animation-delay: 0.3s; }
+.rituals-grid .ritual-card:nth-child(4) { animation-delay: 0.4s; }
+.rituals-grid .ritual-card:nth-child(5) { animation-delay: 0.5s; }
+.rituals-grid .ritual-card:nth-child(6) { animation-delay: 0.6s; }
+.rituals-grid .ritual-card:nth-child(7) { animation-delay: 0.7s; }
