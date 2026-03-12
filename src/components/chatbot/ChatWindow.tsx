@@ -44,9 +44,17 @@ const ChatWindow: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       });
 
       const data = await response.json();
+      
+      // Artificial delay to simulate thinking (1 second)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setMessages(prev => [...prev, { userMessage: "", botResponse: data.reply, isUser: false }]);
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Artificial delay even on error for consistency
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setMessages(prev => [...prev, { 
         userMessage: "", 
         botResponse: "Sorry, I'm having trouble connecting to the temple servers. Please try again later.", 

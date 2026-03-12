@@ -10,7 +10,6 @@ const navLinks = [
   { name: "Travel", path: "/travel" },
   { name: "Food", path: "/food" },
   { name: "Attractions", path: "/attractions" },
-  { name: "Chatbot", path: "/chat" },
   { name: "SOS", path: "/sos" },
 ];
 
