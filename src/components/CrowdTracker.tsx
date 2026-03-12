@@ -57,8 +57,14 @@ const CrowdTracker = () => {
             <div key={gate.id} className="bg-white rounded-lg shadow-md p-6 border-t-4 border-festival-saffron">
               <h3 className="text-xl font-semibold mb-3">{gate.name}</h3>
               <div className="flex items-center mb-4">
-                <div className={`w-4 h-4 rounded-full mr-2 ${getStatusColor(gate.status)}`}></div>
-                <span className="capitalize">{gate.status} crowd</span>
+                <div className="mr-2 h-3 w-3">
+                   {gate.status === 'high' ? (
+                     <div className="pulse"></div>
+                   ) : (
+                     <div className={`h-3 w-3 rounded-full ${getStatusColor(gate.status)}`}></div>
+                   )}
+                </div>
+                <span className="capitalize ml-2">{gate.status} crowd</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div 

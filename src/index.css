@@ -137,3 +137,40 @@
   }
 }
 
+@layer utilities {
+  .pulse {
+    @apply relative flex h-3 w-3;
+  }
+  
+  .pulse::before {
+    content: '';
+    @apply absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  
+  .pulse::after {
+    content: '';
+    @apply relative inline-flex rounded-full h-3 w-3 bg-red-600;
+  }
+  
+  .pulse-yellow::after {
+    @apply bg-yellow-500;
+  }
+  .pulse-yellow::before {
+    @apply bg-yellow-400;
+  }
+  
+  .pulse-green::after {
+    @apply bg-green-500;
+  }
+  .pulse-green::before {
+    @apply bg-green-400;
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}

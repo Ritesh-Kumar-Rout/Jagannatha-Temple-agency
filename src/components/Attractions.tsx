@@ -80,88 +80,87 @@ const Attractions = () => {
 
   return (
 
-      <section className="py-16 bg-gradient-to-br from-pink-100 via-yellow-100 to-blue-100 transition-all duration-1000 ease-in-out">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="section-title inline-block">Nearby Attractions</h2>
-            <p className="mt-4 text-lg text-gray-700 max-w-3xl mx-auto">
-              Explore these incredible places around Puri during your Ratha Yatra visit.
-            </p>
-          </div>
+    <section className="py-16 bg-gradient-to-br from-pink-100 via-yellow-100 to-blue-100 transition-all duration-1000 ease-in-out">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="section-title inline-block">Nearby Attractions</h2>
+          <p className="mt-4 text-lg text-gray-700 max-w-3xl mx-auto">
+            Explore these incredible places around Puri during your Ratha Yatra visit.
+          </p>
+        </div>
 
-          <div className="relative overflow-hidden rounded-2xl shadow-xl max-w-5xl mx-auto">
-            <div
-              className="relative h-96 cursor-pointer"
-              onClick={() => setSelectedAttraction(currentAttraction)}
-            >
-              <img
-                src={currentAttraction.image}
-                alt={currentAttraction.title}
-                className="w-full h-full object-cover"
-                key={currentAttraction.id}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-2xl"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2">
-                  {currentAttraction.title}
-                </h3>
-                <div className="flex flex-wrap gap-4 text-sm">
-                  <span className="bg-festival-saffron px-3 py-1 rounded-full">
-                    {currentAttraction.distance} from Jagannath Temple
-                  </span>
-                  <span className="bg-festival-red px-3 py-1 rounded-full">
-                    Visiting hours: {currentAttraction.visitingHours}
-                  </span>
-                </div>
+        <div className="relative overflow-hidden rounded-2xl shadow-xl max-w-5xl mx-auto">
+          <div
+            className="relative h-64 sm:h-80 md:h-96 cursor-pointer"
+            onClick={() => setSelectedAttraction(currentAttraction)}
+          >
+            <img
+              src={currentAttraction.image}
+              alt={currentAttraction.title}
+              className="w-full h-full object-cover"
+              key={currentAttraction.id}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-2xl"></div>
+            <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">
+                {currentAttraction.title}
+              </h3>
+              <div className="flex flex-wrap gap-2 md:gap-4 text-xs">
+                <span className="bg-festival-saffron px-3 py-1 rounded-full">
+                  {currentAttraction.distance} from Temple
+                </span>
+                <span className="bg-festival-red px-3 py-1 rounded-full line-clamp-1">
+                  Hours: {currentAttraction.visitingHours}
+                </span>
               </div>
             </div>
-
-            <button
-              onClick={prevAttraction}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
-            >
-              <ChevronLeft className="w-6 h-6 text-white" />
-            </button>
-
-            <button
-              onClick={nextAttraction}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
-            >
-              <ChevronRight className="w-6 h-6 text-white" />
-            </button>
-
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-              {attractions.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`w-2.5 h-2.5 rounded-full ${
-                    index === currentIndex ? 'bg-white' : 'bg-white/40'
-                  }`}
-                />
-              ))}
-            </div>
           </div>
 
-          {/* Detailed Info Box */}
-          {selectedAttraction && (
-            <div className="mt-10 bg-white/80 backdrop-blur-md rounded-xl shadow p-6 max-w-4xl mx-auto border border-gray-300">
-              <h3 className="text-2xl font-bold mb-2">{selectedAttraction.title}</h3>
-              <p className="text-gray-700 mb-3">{selectedAttraction.description}</p>
-              <p className="text-gray-600 italic mb-4">{selectedAttraction.history}</p>
-              <a
-                href={selectedAttraction.mapLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-3 text-blue-600 font-semibold hover:underline"
-              >
-                📍 Get Directions on Google Maps
-              </a>
-            </div>
-          )}
+          <button
+            onClick={prevAttraction}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
+          >
+            <ChevronLeft className="w-6 h-6 text-white" />
+          </button>
+
+          <button
+            onClick={nextAttraction}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
+          >
+            <ChevronRight className="w-6 h-6 text-white" />
+          </button>
+
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+            {attractions.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-2.5 h-2.5 rounded-full ${index === currentIndex ? 'bg-white' : 'bg-white/40'
+                  }`}
+              />
+            ))}
+          </div>
         </div>
-      </section>
-    
+
+        {/* Detailed Info Box */}
+        {selectedAttraction && (
+          <div className="mt-10 bg-white/80 backdrop-blur-md rounded-xl shadow p-6 max-w-4xl mx-auto border border-gray-300">
+            <h3 className="text-2xl font-bold mb-2">{selectedAttraction.title}</h3>
+            <p className="text-gray-700 mb-3">{selectedAttraction.description}</p>
+            <p className="text-gray-600 italic mb-4">{selectedAttraction.history}</p>
+            <a
+              href={selectedAttraction.mapLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-3 text-blue-600 font-semibold hover:underline"
+            >
+              📍 Get Directions on Google Maps
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+
   );
 };
 

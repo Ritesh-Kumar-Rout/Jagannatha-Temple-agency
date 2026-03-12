@@ -1,72 +1,103 @@
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import Logo from "./Logo";
 
 const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'Temple Rituals', path: '/rituals' },
-  { name: 'Travel', path: '/travel' },
-  { name: 'Accommodation', path: '/stay' },
-  { name: 'Food', path: '/food' },
-  { name: 'SOS', path: '/SOS' },
-  { name: 'Attractions', path: '/attractions' },
-  { name: 'Chatboot', path: '/Chat' },
-
-
+  { name: "Home", path: "/" },
+  { name: "Rituals", path: "/rituals" },
+  { name: "Stay", path: "/stay" },
+  { name: "Travel", path: "/travel" },
+  { name: "Food", path: "/food" },
+  { name: "Attractions", path: "/attractions" },
+  { name: "Chatbot", path: "/chat" },
+  { name: "SOS", path: "/sos" },
 ];
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md">
+    <nav 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? "bg-white/80 backdrop-blur-md shadow-lg py-2" 
+          : "bg-transparent py-4"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <span className="text-festival-red text-xl md:text-2xl font-bold font-['Yatra_One']">RathaYatraVerse</span>
-            </Link>
+        <div className="flex justify-between items-center h-16">
+          <Link to="/" className="flex items-center">
+            <Logo 
+              size="md" 
+              className={!scrolled && location.pathname === "/" ? "brightness-200" : ""} 
+            />
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden xl:flex items-center space-x-2">
+            {navLinks.map((link) => {
+              const isSOS = link.name === "SOS";
+              const active = isActive(link.path);
+              
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`px-3 py-2 rounded-xl text-sm font-bold transition-all duration-200 uppercase tracking-wider ${
+                    isSOS
+                      ? "bg-festival-red text-white hover:bg-red-700 shadow-md ml-4"
+                      : active
+                      ? scrolled ? "text-festival-red bg-festival-red/5" : "text-festival-gold border-b-2 border-festival-gold rounded-none"
+                      : scrolled ? "text-gray-700 hover:text-festival-red hover:bg-gray-50" : "text-white/90 hover:text-festival-gold hover:bg-white/10"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
-          
-          {/* Desktop navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-1">
-            {navLinks.map((link) => (
-              <Link key={link.name} to={link.path} className="nav-link">
-                {link.name}
-              </Link>
-            ))}
-          </div>
-          
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+
+          {/* Mobile Menu Button */}
+          <div className="xl:hidden flex items-center">
             <button
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-festival-red focus:outline-none"
+              onClick={() => setIsOpen(!isOpen)}
+              className={`p-2 rounded-xl transition-colors ${scrolled ? "text-gray-900 hover:bg-gray-100" : "text-white hover:bg-white/10"}`}
             >
-              {isMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white shadow-lg">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      {/* Mobile Navigation */}
+      {isOpen && (
+        <div className="xl:hidden fixed inset-0 top-[72px] bg-white z-40 animate-in fade-in slide-in-from-top-5 duration-300">
+          <div className="px-4 pt-4 pb-12 space-y-2 h-full overflow-y-auto">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="block px-3 py-2 rounded-md text-base font-medium hover:text-festival-red"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => setIsOpen(false)}
+                className={`block px-6 py-4 rounded-2xl text-lg font-black transition-all ${
+                  link.name === "SOS"
+                    ? "bg-festival-red text-white text-center mt-6 shadow-xl"
+                    : isActive(link.path)
+                    ? "bg-festival-red/5 text-festival-red border-l-8 border-festival-red pl-4"
+                    : "text-gray-800 hover:bg-gray-50 border-l-8 border-transparent"
+                }`}
               >
                 {link.name}
               </Link>

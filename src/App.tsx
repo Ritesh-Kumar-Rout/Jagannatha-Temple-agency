@@ -11,10 +11,10 @@ import NotFound from "./pages/NotFound";
 import FestivalCalendar from "./pages/rathayatracalender";
 import  Sos from "./pages/SOS";
 import HotelsNearJagannathTemple from "./pages/Accomodation"
-import Attractions from "./pages/attractions"
 import PuriExcursions from "./pages/PuriExcursions";
 import SweetList from "./pages/Food";
 import LiveStream from "./components/LiveStream";
+import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 
 const queryClient = new QueryClient();
 
@@ -30,21 +30,16 @@ const App = () => (
           <Route path="/travel" element={<Travel />} />
           <Route path="/rathayatracalender" element={<FestivalCalendar />} />
           <Route path="/sos" element={<Sos />} />
-          <Route path="/Stay" element={< HotelsNearJagannathTemple />} />
+          <Route path="/stay" element={< HotelsNearJagannathTemple />} />
           <Route path="/attractions" element={<  PuriExcursions />} />
           <Route path="/food" element={<SweetList />} />
+          <Route path="/chat" element={<NotFound />} />
           <Route path="/live" element={<LiveStream />} />
-
-
-          
-
-
-
-          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <ChatbotWidget />
     </TooltipProvider>
   </QueryClientProvider>
 );

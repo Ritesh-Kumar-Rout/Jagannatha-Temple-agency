@@ -1,210 +1,101 @@
 import Layout from '../components/Layout';
 import React, { useState } from 'react';
+import { Flower2 } from 'lucide-react';
 import './Rituals.css';
+import { rituals } from '../lib/data';
+import RitualCard from '../components/rituals/RitualCard';
+import RitualDetailsModal from '../components/rituals/RitualDetailsModal';
 
 const JagannathTempleRituals = () => {
-  const [expandedCardId, setExpandedCardId] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState({});
+  const [activeRitual, setActiveRitual] = useState<any>(null);
 
-  const rituals = [
-    {
-      id: 1,
-      title: "🕉 Daily Rituals at Jagannath Temple",
-      emoji: "🕉",
-      shortDesc: "The daily worship rituals of Lord Jagannath",
-      details: "These are performed year-round, including during the Ratha Yatra season:\n\n" +
-               "📦 Ritual Box: Daily Sevas\n" +
-               "Dwara Phita – Opening of the temple doors early morning.\n\n" +
-               "Mangala Arati – Morning prayer and aarti.\n\n" +
-               "Mailam – Removal of previous day's flowers and clothes.\n\n" +
-               "Abakasha – Ritual bath and brushing of deities' teeth.\n\n" +
-               "Sakala Dhupa – Morning offering of cooked food.\n\n" +
-               "Madhyanna Dhupa – Midday food offering.\n\n" +
-               "Sandhya Dhupa – Evening aarti and offerings.\n\n" +
-               "Badasinghara Dhupa – Nighttime offering with devotional songs and floral decoration.\n\n" +
-               "Pahuda – Deities are put to rest; doors closed for the day.",
-      image: "Balabhadra_Subhadra_Jagannath.jpg"
-    },
-    {
-      id: 2,
-      title: "💧 Snana Purnima Rituals",
-      emoji: "💧",
-      shortDesc: "The sacred bathing ceremony of the deities",
-      details: "This marks the beginning of the Ratha Yatra cycle.\n\n" +
-               "📦 Ritual Box: Snana Purnima\n" +
-               "Jalabhishek – 108 pitchers of sacred water are poured on each deity (Jagannath, Balabhadra, Subhadra).\n\n" +
-               "Snana Mandap Darshan – Public viewing of the deities during the bath.\n\n" +
-               "Hati Besha – The deities appear in elephant attire after the bath.\n\n" +
-               "Anasara Ghara – After bathing, the deities fall 'sick' and retreat into isolation.\n\n" +
-               "Pati Dian (Secret Deity) – During this time, devotees worship a painted wooden representation of Jagannath (Pati Dian).",
-      image: "Snana Purnima Rituals.jpg"
-    },
-    {
-      id: 3,
-      title: " Gundicha Yatra Rituals",
-      emoji: "🛕",
-      shortDesc: "The famous Rath Yatra festival rituals",
-      details: "Celebrated on the Dwitiya Tithi of Ashadha Shukla Paksha.\n\n" +
-               "📦 Ritual Box: Gundicha Yatra\n" +
-               "Netrotsava – Day before Ratha Yatra, divine sight of the deity is restored.\n\n" +
-               "Pahandi Bije – Grand procession of the deities from temple to chariots.\n\n" +
-               "Chhera Pahanra – Gajapati King sweeps the chariots with a golden broom.\n\n" +
-               "Ratha Pratistha – Installation of deities on their respective chariots.\n\n" +
-               "Chariot Pulling – Devotees pull the chariots to Gundicha Temple, about 3 km away.\n\n" +
-               "Devas stay at Gundicha – Deities rest here for 7 days in a peaceful and festive environment.",
-      image: "Jagannath-Rath-Yatra-Puri-rituals.jpg"
-    },
-    {
-      id: 4,
-      title: " Bahuda Yatra",
-      emoji: "",
-      shortDesc: "The return journey of the deities",
-      details: "The deities begin their journey back to the main temple.\n\n" +
-               "📦 Ritual Box: Bahuda Yatra\n" +
-               "Bahuda Pahandi – Procession of deities back to chariots from Gundicha Temple.\n\n" +
-               "Bahuda Ratha Yatra – Chariots are pulled back to the main temple.\n\n" +
-               "Mausi Maa Temple Stop – Deities stop at Mausi Maa Temple and offered Poda Pitha (a special rice cake).",
-      image: "Happy Bahuda Jatra wishes in Odia 2022.jpg"
-    },
-    {
-      id: 5,
-      title: " Suna Besha",
-      emoji: "",
-      shortDesc: "The golden attire of the deities",
-      details: "The deities are adorned in gold ornaments.\n\n" +
-               "📦 Ritual Box: Suna Besha\n" +
-               "Golden Attire – Deities are decorated with gold ornaments while still on the chariots.\n\n" +
-               "Public Viewing – Devotees get darshan of the deities in this magnificent form.\n\n" +
-               "Special Offerings – Special prayers and offerings are made during this time.",
-      image: "Hotel sagar kanya.jpg"
-    },
-    {
-      id: 6,
-      title: " Adhara Pana",
-      emoji: "",
-      shortDesc: "The ceremonial offering of sweet drink",
-      details: "The deities are offered a refreshing drink.\n\n" +
-               "📦 Ritual Box: Adhara Pana\n" +
-               "Sweet Offering – Deities are offered a sweet drink in giant earthen pots.\n\n" +
-               "Symbolic Refreshment – Represents the deities being refreshed after their long journey.\n\n" +
-               "Distribution – The remaining drink is distributed among devotees as prasad.",
-      image: "Adhara pana.jpg"
-    },
-    {
-      id: 7,
-      title: " Niladri Bije",
-      emoji: "",
-      shortDesc: "The final return to the temple",
-      details: "The conclusion of the Rath Yatra festival.\n\n" +
-               "📦 Ritual Box: Niladri Bije\n" +
-               "Lakshmi's Anger – Goddess Lakshmi closes the temple gate, upset for being left behind.\n\n" +
-               "Jagannath's Plea – Lord Jagannath appeases her with gifts.\n\n" +
-               "Re-entry – Deities are finally taken inside the temple, ending the Rath Yatra festival.",
-      image: "niladri-bije.jpeg"
-    }
-  ];
-
-  const handleCardClick = (id) => {
-    setExpandedCardId(expandedCardId === id ? null : id);
+  const handleOpenRitual = (ritual: any) => {
+    setActiveRitual(ritual);
+    setShowModal(true);
   };
 
-  const openModal = (ritual) => {
-    setModalContent(ritual);
-    setShowModal(true);
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
     <Layout>
-      <div className="temple-app">
-        {/* Hero Section */}
-        <header className="hero">
-          <div className="hero-overlay">
-            <h1>Jagannath Temple Rituals</h1>
-            <p>Discover the sacred traditions of Puri's famous temple</p>
+      <div className="rituals-page">
+        {/* Immersive Hero Section */}
+        <header className="rituals-hero">
+          <div className="hero-content">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-festival-gold/10 border border-festival-gold/20 mb-6 backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-festival-gold animate-pulse"></span>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-festival-gold">Divine Traditions</span>
+            </div>
+            <h1 className="drop-shadow-2xl">Sacred Rituals</h1>
+            <p className="drop-shadow-md">
+              Explore the divine ceremonies and traditions of Lord Jagannath's grand festival, carried out with devotion for centuries.
+            </p>
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="container">
-          <div className="rituals-grid">
+        {/* Section Header with Ornament */}
+        <div className="rituals-section-header">
+          <div className="ritual-ornament">
+            <div className="ornament-line"></div>
+            <Flower2 className="ornament-icon animate-spin-slow" size={24} />
+            <div className="ornament-line right"></div>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-bold font-serif text-festival-red mb-4 uppercase tracking-[0.2em]">
+            Ancient Observances
+          </h2>
+          <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            From daily sevas to grand annual ceremonies, witness the intricate details of temple worship that have remained unchanged for generations.
+          </p>
+        </div>
+
+        {/* Modern Grid Layout with Components */}
+        <main className="rituals-grid-wrapper">
+          <div className="rituals-grid animate-in fade-in slide-in-from-bottom-5 duration-700">
             {rituals.map((ritual) => (
-              <div 
-                key={ritual.id}
-                className={`ritual-card ${expandedCardId === ritual.id ? 'expanded' : ''}`}
-                onClick={() => handleCardClick(ritual.id)}
-              >
-                <div className="card-header">
-                  <span className="emoji">{ritual.emoji}</span>
-                  <h3>{ritual.title}</h3>
-                </div>
-                <p className="short-desc">{ritual.shortDesc}</p>
-                
-                {expandedCardId === ritual.id && (
-                  <div className="card-details">
-                    <p>{ritual.details}</p>
-                    <button 
-                      className="learn-more-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModal(ritual);
-                      }}
-                    >
-                      View Images & Details
-                    </button>
-                  </div>
-                )}
-              </div>
+              <RitualCard 
+                key={ritual.id} 
+                ritual={ritual} 
+                onClick={handleOpenRitual} 
+              />
             ))}
           </div>
         </main>
 
-        {/* Modal */}
-        {showModal && (
-          <div className="modal-overlay" onClick={() => setShowModal(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <button className="close-btn" onClick={() => setShowModal(false)}>
-                &times;
-              </button>
-              <h2>{modalContent.title}</h2>
-              <div className="modal-body">
-                <div className="modal-image-container">
-                  {modalContent.image ? (
-                    <img 
-                      src={modalContent.image} 
-                      alt={modalContent.title} 
-                      className="ritual-image"
-                      onError={(e) => {
-                        e.target.onerror = null; 
-                        e.target.src = "placeholder-image.jpg";
-                      }}
-                    />
-                  ) : (
-                    <div className="image-placeholder">
-                      Image not available
-                    </div>
-                  )}
-                </div>
-                <div className="modal-text-content">
-                  {modalContent.details.split('\n\n').map((paragraph, i) => (
-                    <p key={i}>{paragraph}</p>
-                  ))}
-                </div>
-                <div className="timing-info">
-                  <h4>Timings:</h4>
-                  <p>5:00 AM - 12:00 AM (varies by ritual)</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Enhanced Ritual Details Modal */}
+        {showModal && activeRitual && (
+          <RitualDetailsModal 
+            ritual={activeRitual} 
+            onClose={handleCloseModal} 
+          />
         )}
-
-        {/* Footer */}
-        <footer className="app-footer">
-          <p>© {new Date().getFullYear()} Jagannath Temple, Puri</p>
-          <p>All rituals are subject to temple schedule</p>
-        </footer>
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #fdfaf3;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 107, 0, 0.2);
+          border-radius: 10px;
+          border: 2px solid #fdfaf3;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 107, 0, 0.4);
+        }
+        .animate-spin-slow {
+          animation: spin 10s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}} />
     </Layout>
   );
 };
