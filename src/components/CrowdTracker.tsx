@@ -1,5 +1,7 @@
-
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tilt3D } from './ui/Tilt3D';
+import { FloatingElement } from './ui/FloatingElement';
 
 const gates = [
   { id: 1, name: "Lion Gate (East)", status: "moderate" },
@@ -19,6 +21,12 @@ const getStatusColor = (status: string) => {
     default:
       return "bg-gray-300";
   }
+};
+
+const getStatusWidth = (status: string) => {
+  if (status === "low") return "30%";
+  if (status === "moderate") return "65%";
+  return "90%";
 };
 
 const CrowdTracker = () => {
@@ -43,60 +51,91 @@ const CrowdTracker = () => {
   }, [crowdData]);
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+    <section className="py-24 bg-gray-50/50 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", duration: 1 }}
+          className="text-center mb-16"
+        >
           <h2 className="section-title inline-block">Live Crowd Status</h2>
           <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
             Real-time crowd information at temple gates to help plan your visit.
           </p>
-        </div>
+        </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {crowdData.map((gate) => (
-            <div key={gate.id} className="bg-white rounded-lg shadow-md p-6 border-t-4 border-festival-saffron">
-              <h3 className="text-xl font-semibold mb-3">{gate.name}</h3>
-              <div className="flex items-center mb-4">
-                <div className="mr-2 h-3 w-3">
-                   {gate.status === 'high' ? (
-                     <div className="pulse"></div>
-                   ) : (
-                     <div className={`h-3 w-3 rounded-full ${getStatusColor(gate.status)}`}></div>
-                   )}
-                </div>
-                <span className="capitalize ml-2">{gate.status} crowd</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className={`h-2.5 rounded-full ${getStatusColor(gate.status)}`} 
-                  style={{ 
-                    width: gate.status === "low" ? "30%" : gate.status === "moderate" ? "65%" : "90%" 
-                  }}
-                ></div>
-              </div>
-              <p className="mt-4 text-sm text-gray-500">
-                Last updated: {new Date().toLocaleTimeString()}
-              </p>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {crowdData.map((gate, index) => (
+            <motion.div
+              key={gate.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
+              className="h-full"
+            >
+              <Tilt3D perspective={1000} maxRotation={8} className="h-full">
+                <FloatingElement delay={index * 0.2} duration={4} yOffset={6} className="h-full">
+                  <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-t-8 border-festival-saffron h-full flex flex-col relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-black/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    <h3 className="text-xl font-bold mb-4 z-10">{gate.name}</h3>
+                    <div className="flex items-center mb-6 z-10">
+                      <div className="mr-3 flex items-center justify-center">
+                         {gate.status === 'high' ? (
+                           <div className="w-3 h-3 rounded-full bg-festival-red animate-ping absolute"></div>
+                         ) : null}
+                         <div className={`h-3 w-3 rounded-full relative z-10 ${getStatusColor(gate.status)}`}></div>
+                      </div>
+                      <span className="capitalize font-medium text-gray-700">{gate.status} Crowd</span>
+                    </div>
+                    
+                    <div className="w-full bg-gray-100 rounded-full h-3 mb-4 overflow-hidden z-10 mt-auto">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: getStatusWidth(gate.status) }}
+                        transition={{ type: "spring", stiffness: 50, damping: 15 }}
+                        className={`h-full rounded-full ${getStatusColor(gate.status)}`}
+                      ></motion.div>
+                    </div>
+                    
+                    <p className="mt-2 text-xs font-semibold text-gray-400 uppercase tracking-wider z-10">
+                      Last updated: {new Date().toLocaleTimeString()}
+                    </p>
+                  </div>
+                </FloatingElement>
+              </Tilt3D>
+            </motion.div>
           ))}
         </div>
         
-        <div className="mt-10 text-center">
-          <div className="inline-flex items-center space-x-4 bg-white p-4 rounded-lg shadow-sm">
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-festival-green mr-2"></div>
-              <span className="text-sm">Low</span>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5, type: "spring" }}
+          className="mt-16 text-center"
+        >
+          <FloatingElement yOffset={4}>
+            <div className="inline-flex items-center space-x-6 bg-white/80 backdrop-blur-md px-8 py-4 rounded-2xl shadow-md border border-gray-100">
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-festival-green mr-3"></div>
+                <span className="text-sm font-bold uppercase tracking-wider text-gray-600">Low</span>
+              </div>
+              <div className="w-px h-6 bg-gray-200"></div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-festival-yellow mr-3"></div>
+                <span className="text-sm font-bold uppercase tracking-wider text-gray-600">Moderate</span>
+              </div>
+              <div className="w-px h-6 bg-gray-200"></div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-festival-red mr-3 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+                <span className="text-sm font-bold uppercase tracking-wider text-gray-600">High</span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-festival-yellow mr-2"></div>
-              <span className="text-sm">Moderate</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-festival-red mr-2"></div>
-              <span className="text-sm">High</span>
-            </div>
-          </div>
-        </div>
+          </FloatingElement>
+        </motion.div>
       </div>
     </section>
   );

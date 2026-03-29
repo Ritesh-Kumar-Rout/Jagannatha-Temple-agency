@@ -62,7 +62,7 @@ exports.handleChat = async (req, res) => {
         const prompt = `You are a helpful assistant for the Ratha Yatra Festival. 
         Answer this user question about the festival: "${message}". 
         If it is not about Ratha Yatra or Lord Jagannath, politely guide them back to the festival topic. 
-        Keep the response concise and respectful.`;
+        CRITICAL RULES: Responses MUST be very short, concise, and straight to the point. Do NOT write long paragraphs. Use clear, small readable chunks.`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
