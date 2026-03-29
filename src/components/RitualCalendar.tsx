@@ -1,7 +1,9 @@
-
 import { useState } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FloatingElement } from './ui/FloatingElement';
+import { Magnetic } from './ui/Magnetic';
 
 // Sample ritual events data
 const ritualEvents = [
@@ -47,7 +49,6 @@ const ritualEvents = [
   }
 ];
 
-
 const RitualCalendar = () => {
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   
@@ -71,48 +72,82 @@ const RitualCalendar = () => {
   });
 
   return (
-    <section className="py-16 bg-white">
+    <motion.section 
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-100px" }}
+      className="py-24 bg-gradient-to-t from-white to-orange-50/30 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", duration: 1 }}
+          className="text-center mb-16"
+        >
           <h2 className="section-title inline-block">Upcoming Rituals</h2>
           <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
             Mark your calendar for these important Ratha Yatra events.
           </p>
-        </div>
+        </motion.div>
         
-        <div className="bg-gray-50 rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
-          <div className="flex justify-between items-center mb-6">
-            <button 
-              onClick={prevEvent} 
-              className="p-2 rounded-full bg-white shadow hover:bg-gray-100"
-            >
-              <ChevronLeft className="w-6 h-6 text-festival-red" />
-            </button>
-            <div className="flex items-center text-festival-red">
-              <Calendar className="w-6 h-6 mr-2" />
-              <span className="text-lg font-medium">{formattedDate}</span>
+        <FloatingElement duration={5} yOffset={12}>
+          <div className="bg-white/60 backdrop-blur-xl border border-white/60 rounded-3xl shadow-[0_20px_60px_rgb(0,0,0,0.05)] p-8 md:p-12 max-w-4xl mx-auto relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-festival-saffron/10 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2"></div>
+            
+            <div className="flex justify-between items-center mb-10">
+              <Magnetic strength={0.3}>
+                <button 
+                  onClick={prevEvent} 
+                  className="p-3 md:p-4 rounded-full bg-white shadow-lg hover:shadow-xl hover:scale-110 transition-all border border-gray-100"
+                >
+                  <ChevronLeft className="w-6 h-6 text-festival-red" />
+                </button>
+              </Magnetic>
+              <div className="flex flex-col md:flex-row items-center text-festival-red bg-red-50/50 px-6 py-3 rounded-2xl">
+                <Calendar className="w-5 h-5 md:mr-3 mb-2 md:mb-0" />
+                <span className="text-xl font-bold tracking-wide">{formattedDate}</span>
+              </div>
+              <Magnetic strength={0.3}>
+                <button 
+                  onClick={nextEvent} 
+                  className="p-3 md:p-4 rounded-full bg-white shadow-lg hover:shadow-xl hover:scale-110 transition-all border border-gray-100"
+                >
+                  <ChevronRight className="w-6 h-6 text-festival-red" />
+                </button>
+              </Magnetic>
             </div>
-            <button 
-              onClick={nextEvent} 
-              className="p-2 rounded-full bg-white shadow hover:bg-gray-100"
-            >
-              <ChevronRight className="w-6 h-6 text-festival-red" />
-            </button>
+            
+            <div className="text-center py-6 relative overflow-hidden h-64 md:h-56 flex flex-col justify-center">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentEvent.title}
+                  initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -20, filter: "blur(4px)" }}
+                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                >
+                  <h3 className="text-3xl font-black text-festival-saffron mb-4">{currentEvent.title}</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed mb-8">{currentEvent.description}</p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            
+            <div className="text-center mt-4">
+              <Magnetic strength={0.2}>
+                <Link 
+                  to="/rituals" 
+                  className="inline-block px-8 py-4 bg-festival-red text-white font-bold rounded-2xl shadow-xl shadow-festival-red/20 hover:scale-105 transition-all"
+                >
+                  View All Rituals
+                </Link>
+              </Magnetic>
+            </div>
           </div>
-          
-          <div className="text-center py-6">
-            <h3 className="text-2xl font-bold text-festival-saffron mb-3">{currentEvent.title}</h3>
-            <p className="text-gray-600 mb-6">{currentEvent.description}</p>
-            <Link 
-              to="/rituals" 
-              className="px-6 py-2 bg-festival-red text-white rounded-lg shadow hover:bg-red-700 transition-colors"
-            >
-              View All Rituals
-            </Link>
-          </div>
-        </div>
+        </FloatingElement>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

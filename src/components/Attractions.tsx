@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Layout from '../components/Layout';
+import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tilt3D } from './ui/Tilt3D';
+import { FloatingElement } from './ui/FloatingElement';
 
 const attractions = [
   {
@@ -55,7 +57,7 @@ const attractions = [
 
 const Attractions = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedAttraction, setSelectedAttraction] = useState(null);
+  const [selectedAttraction, setSelectedAttraction] = useState<any>(null);
 
   const nextAttraction = () => {
     setCurrentIndex((prevIndex) =>
@@ -71,96 +73,147 @@ const Attractions = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      nextAttraction();
+      if (!selectedAttraction) {
+        nextAttraction();
+      }
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedAttraction]);
 
   const currentAttraction = attractions[currentIndex];
 
   return (
-
-    <section className="py-16 bg-gradient-to-br from-pink-100 via-yellow-100 to-blue-100 transition-all duration-1000 ease-in-out">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+    <section className="py-24 bg-gradient-to-br from-pink-50/50 via-yellow-50/50 to-blue-50/50 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring" }}
+          className="text-center mb-16"
+        >
           <h2 className="section-title inline-block">Nearby Attractions</h2>
           <p className="mt-4 text-lg text-gray-700 max-w-3xl mx-auto">
             Explore these incredible places around Puri during your Ratha Yatra visit.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="relative overflow-hidden rounded-2xl shadow-xl max-w-5xl mx-auto">
-          <div
-            className="relative h-64 sm:h-80 md:h-96 cursor-pointer"
-            onClick={() => setSelectedAttraction(currentAttraction)}
-          >
-            <img
-              src={currentAttraction.image}
-              alt={currentAttraction.title}
-              className="w-full h-full object-cover"
-              key={currentAttraction.id}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-2xl"></div>
-            <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 text-white">
-              <h3 className="text-xl md:text-2xl font-bold mb-2">
-                {currentAttraction.title}
-              </h3>
-              <div className="flex flex-wrap gap-2 md:gap-4 text-xs">
-                <span className="bg-festival-saffron px-3 py-1 rounded-full">
-                  {currentAttraction.distance} from Temple
-                </span>
-                <span className="bg-festival-red px-3 py-1 rounded-full line-clamp-1">
-                  Hours: {currentAttraction.visitingHours}
-                </span>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", duration: 1.5 }}
+          className="relative max-w-5xl mx-auto"
+        >
+          <Tilt3D perspective={2000} maxRotation={5}>
+            <div className="relative overflow-hidden rounded-3xl shadow-2xl h-64 sm:h-80 md:h-[500px] cursor-pointer group" onClick={() => setSelectedAttraction(currentAttraction)}>
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentAttraction.id}
+                  src={currentAttraction.image}
+                  alt={currentAttraction.title}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="w-full h-full object-cover"
+                />
+              </AnimatePresence>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+              
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white pointer-events-none">
+                <motion.h3 
+                  key={`title-${currentAttraction.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-3xl md:text-5xl font-black mb-4"
+                >
+                  {currentAttraction.title}
+                </motion.h3>
+                <div className="flex flex-wrap gap-4 text-sm font-bold tracking-wider">
+                  <span className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                    {currentAttraction.distance} from Temple
+                  </span>
+                  <span className="bg-festival-red/80 backdrop-blur-md px-4 py-2 rounded-full border border-festival-red/50">
+                    {currentAttraction.visitingHours}
+                  </span>
+                </div>
+              </div>
+
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-black/20 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                <span className="bg-white/20 backdrop-blur-lg border border-white/50 text-white px-6 py-3 rounded-full font-bold tracking-widest uppercase text-sm">Click to View Details</span>
               </div>
             </div>
-          </div>
+          </Tilt3D>
 
           <button
-            onClick={prevAttraction}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
+            onClick={(e) => { e.stopPropagation(); prevAttraction(); }}
+            className="absolute -left-5 md:-left-8 top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/50 backdrop-blur-xl shadow-xl hover:bg-white hover:scale-110 transition-all z-20 text-gray-800"
           >
-            <ChevronLeft className="w-6 h-6 text-white" />
+            <ChevronLeft className="w-6 h-6" />
           </button>
 
           <button
-            onClick={nextAttraction}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
+            onClick={(e) => { e.stopPropagation(); nextAttraction(); }}
+            className="absolute -right-5 md:-right-8 top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/50 backdrop-blur-xl shadow-xl hover:bg-white hover:scale-110 transition-all z-20 text-gray-800"
           >
-            <ChevronRight className="w-6 h-6 text-white" />
+            <ChevronRight className="w-6 h-6" />
           </button>
 
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+          <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex space-x-3">
             {attractions.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-2.5 h-2.5 rounded-full ${index === currentIndex ? 'bg-white' : 'bg-white/40'
-                  }`}
+                onClick={(e) => { e.stopPropagation(); setCurrentIndex(index); }}
+                className={`transition-all duration-300 rounded-full ${
+                  index === currentIndex ? 'w-8 h-2.5 bg-festival-red' : 'w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400'
+                }`}
               />
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Detailed Info Box */}
-        {selectedAttraction && (
-          <div className="mt-10 bg-white/80 backdrop-blur-md rounded-xl shadow p-6 max-w-4xl mx-auto border border-gray-300">
-            <h3 className="text-2xl font-bold mb-2">{selectedAttraction.title}</h3>
-            <p className="text-gray-700 mb-3">{selectedAttraction.description}</p>
-            <p className="text-gray-600 italic mb-4">{selectedAttraction.history}</p>
-            <a
-              href={selectedAttraction.mapLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-3 text-blue-600 font-semibold hover:underline"
+        <AnimatePresence>
+          {selectedAttraction && (
+            <motion.div 
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              className="mt-20 max-w-4xl mx-auto"
             >
-              📍 Get Directions on Google Maps
-            </a>
-          </div>
-        )}
+              <FloatingElement duration={6} yOffset={10}>
+                <div className="bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl p-8 md:p-12 border border-white/50 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-festival-saffron via-festival-red to-festival-gold"></div>
+                  <button 
+                    onClick={() => setSelectedAttraction(null)}
+                    className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="sr-only">Close</span>
+                    <svg className="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                  <h3 className="text-3xl md:text-4xl font-black mb-4 tracking-tight text-gray-900">{selectedAttraction.title}</h3>
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6">{selectedAttraction.description}</p>
+                  <div className="bg-gray-50/50 rounded-2xl p-6 mb-6">
+                    <p className="text-gray-600 italic font-medium">✨ {selectedAttraction.history}</p>
+                  </div>
+                  <a
+                    href={selectedAttraction.mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
+                  >
+                    <MapPin className="w-5 h-5" />
+                    Get Directions on Maps
+                  </a>
+                </div>
+              </FloatingElement>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
-
   );
 };
 

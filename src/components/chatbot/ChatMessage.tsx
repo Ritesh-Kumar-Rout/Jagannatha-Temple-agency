@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
+import { motion } from 'framer-motion';
 
 interface ChatMessageProps {
   message: {
@@ -12,26 +13,58 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message, isUser }) => {
-  const text = isUser ? message.userMessage : (message.botResponse || message.text);
+  const fullText = isUser ? message.userMessage : (message.botResponse || message.text || "");
+  const [displayedText, setDisplayedText] = React.useState(isUser ? fullText : "");
+  const [isTyping, setIsTyping] = React.useState(!isUser);
+
+  React.useEffect(() => {
+    if (!isUser && fullText) {
+      let currentText = "";
+      let index = 0;
+      const speed = 15; // ms per character
+
+      const interval = setInterval(() => {
+        if (index < fullText.length) {
+          currentText += fullText[index];
+          setDisplayedText(currentText);
+          index++;
+        } else {
+          setIsTyping(false);
+          clearInterval(interval);
+        }
+      }, speed);
+
+      return () => clearInterval(interval);
+    }
+  }, [fullText, isUser]);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={cn(
-        "flex w-full mb-4",
+        "flex w-full mb-5",
         isUser ? "justify-end" : "justify-start"
       )}
     >
       <div
         className={cn(
-          "max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm",
+          "max-w-[85%] rounded-3xl px-5 py-3.5 text-[15px] shadow-md transition-all duration-300 relative",
           isUser
-            ? "bg-festival-saffron text-white rounded-br-none"
-            : "bg-[#1A2E35] text-white border border-[#2A3E45] rounded-bl-none"
+            ? "bg-gradient-to-br from-festival-saffron to-[#e8701a] text-white rounded-br-sm shadow-[#e8701a]/20"
+            : "bg-[#112a33]/80 backdrop-blur-md text-gray-100 border border-t-white/10 border-white/5 rounded-bl-sm shadow-black/20",
+          !isUser && isTyping && "border-festival-gold/30 shadow-[0_0_15px_rgba(217,119,6,0.1)]"
         )}
       >
-        <p className="leading-relaxed">{text}</p>
+        <div className="leading-relaxed whitespace-pre-wrap">
+          {displayedText}
+          {!isUser && isTyping && (
+            <span className="inline-block w-1.5 h-4 ml-1.5 bg-festival-gold/70 animate-pulse align-middle rounded-full"></span>
+          )}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
