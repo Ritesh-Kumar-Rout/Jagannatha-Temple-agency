@@ -19,7 +19,7 @@ const Hero = () => {
   return (
     <div ref={container} className="relative text-white overflow-hidden h-screen flex items-center">
       {/* Background Video - Full screen with dark overlay and Parallax */}
-      <motion.div style={{ y: yBackground }} className="absolute inset-0 w-full h-[120%] -top-[10%] z-0">
+      <motion.div style={{ y: yBackground }} className="absolute inset-0 w-full h-[120%] -top-[10%] z-0 pointer-events-none">
         <video
           autoPlay
           loop

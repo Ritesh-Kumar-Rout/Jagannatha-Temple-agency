@@ -41,6 +41,7 @@ const LiveStream = () => {
                       width="100%"
                       height="100%"
                       className="absolute inset-0"
+                      data-lenis-prevent="true"
                       src="https://www.youtube.com/embed/_pplsMPNVmQ?si=6uxDBBF6W7mhlcBR"
                       title="YouTube video player"
                       frameBorder="0"
