@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Star, X } from 'lucide-react';
 import RitualGallery from './RitualGallery';
 import RitualInfoSection from './RitualInfoSection';
@@ -18,10 +18,19 @@ interface RitualDetailsModalProps {
 }
 
 const RitualDetailsModal: React.FC<RitualDetailsModalProps> = ({ ritual, onClose }) => {
+  // Lock body scroll when modal is open to prevent background scrolling
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   return (
     <div 
       className="modal-overlay fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-md transition-all duration-300 animate-in fade-in"
       onClick={onClose}
+      data-lenis-prevent="true"
     >
       <div 
         className="modal-content modal-content-premium relative bg-white w-full h-full md:w-[90%] md:h-[90%] md:max-w-5xl md:rounded-3xl border-festival-cream border-4 overflow-hidden shadow-2xl flex flex-col animate-in slide-in-from-bottom-10"
@@ -36,7 +45,10 @@ const RitualDetailsModal: React.FC<RitualDetailsModalProps> = ({ ritual, onClose
         </button>
 
         {/* Scrollable Body */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-12">
+        <div 
+          className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-12"
+          data-lenis-prevent="true"
+        >
           {/* Title Section */}
           <div className="flex flex-col md:flex-row items-center gap-6 mb-10 text-center md:text-left">
             <div className="p-4 bg-festival-gold/10 rounded-2xl">

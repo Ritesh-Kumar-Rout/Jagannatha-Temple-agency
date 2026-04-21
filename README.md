@@ -1,73 +1,58 @@
-# Welcome to your Lovable project
+# Jagannatha Temple Agency
 
-## Project info
+This project features a modern, full-stack client-server architecture. It includes an interactive React frontend and a Node.js Express backend structured similarly to a robust MVC Spring Boot architecture.
 
-**URL**: https://lovable.dev/projects/d04796ee-69f1-488a-981f-908fdbb6363b
+## Project Structure
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/d04796ee-69f1-488a-981f-908fdbb6363b) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+├── client/          # Frontend application (React + Vite + TypeScript)
+│   ├── public/      # Static assets
+│   ├── src/         # Main application code
+│   │   ├── pages/   # Application routes and pages
+│   │   ├── components/ # Reusable UI components
+│   │   ├── assets/  # Images and static files
+│   │   ├── hooks/   # React logic hooks
+│   │   └── lib/     # Utilities and helper JS
+│   └── package.json 
+├── server/          # Backend APIs (Node.js/Express)
+│   ├── config/      # Environment/DB configuration
+│   ├── controllers/ # API route handlers that handle HTTP requests
+│   ├── services/    # Business logic separating HTTP from logic layer
+│   ├── repositories/# Database interactions and queries
+│   ├── models/      # Mongoose schemas representing domain entities
+│   ├── routes/      # Express API routes
+│   ├── resources/   # Static server resources
+│   └── package.json 
+└── README.md
 ```
 
-**Edit a file directly in GitHub**
+## How to Run
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Backend (Server)
+1. Open a terminal and navigate to the `server` directory:
+   ```bash
+   cd server
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the backend server (starts on `localhost:8080`):
+   ```bash
+   node server.js
+   ```
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d04796ee-69f1-488a-981f-908fdbb6363b) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Frontend (Client)
+1. Open a new terminal and navigate to the `client` directory:
+   ```bash
+   cd client
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Application opens in your browser at `http://localhost:3000` and automatically proxies `/api` calls to the backend on port 8080.
