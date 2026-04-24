@@ -1,14 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Layout from '../components/Layout';
-import React, { useState } from 'react';
-import { Flower2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Flower2, Loader2 } from 'lucide-react';
 import './Rituals.css';
-import { rituals } from '../lib/data';
 import RitualCard from '../components/rituals/RitualCard';
 import RitualDetailsModal from '../components/rituals/RitualDetailsModal';
 
 const JagannathTempleRituals = () => {
   const [showModal, setShowModal] = useState(false);
   const [activeRitual, setActiveRitual] = useState<any>(null);
+  const [rituals, setRituals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/cms/public/rituals')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setRituals(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch rituals", err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleOpenRitual = (ritual: any) => {
     setActiveRitual(ritual);
@@ -52,16 +69,27 @@ const JagannathTempleRituals = () => {
         </div>
 
         {/* Modern Grid Layout with Components */}
-        <main className="rituals-grid-wrapper">
-          <div className="rituals-grid animate-in fade-in slide-in-from-bottom-5 duration-700">
-            {rituals.map((ritual) => (
-              <RitualCard 
-                key={ritual.id} 
-                ritual={ritual} 
-                onClick={handleOpenRitual} 
-              />
-            ))}
-          </div>
+        <main className="rituals-grid-wrapper min-h-[400px]">
+          {loading ? (
+            <div className="flex justify-center items-center h-full pt-20">
+              <Loader2 className="w-8 h-8 text-festival-red animate-spin" />
+            </div>
+          ) : (
+            <div className="rituals-grid animate-in fade-in slide-in-from-bottom-5 duration-700">
+              {rituals.map((ritual) => (
+                <RitualCard 
+                  key={ritual._id || ritual.id} 
+                  ritual={ritual} 
+                  onClick={handleOpenRitual} 
+                />
+              ))}
+              {rituals.length === 0 && (
+                <div className="col-span-full text-center text-gray-500 py-10">
+                  No rituals available. Add them from the admin panel.
+                </div>
+              )}
+            </div>
+          )}
         </main>
 
         {/* Enhanced Ritual Details Modal */}

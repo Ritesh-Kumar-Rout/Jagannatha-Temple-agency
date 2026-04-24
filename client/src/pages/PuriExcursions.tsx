@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { attractions } from '../lib/data';
 import AttractionHero from '../components/attractions/AttractionHero';
 import AttractionCard from '../components/attractions/AttractionCard';
 import AttractionModal from '../components/attractions/AttractionModal';
@@ -8,6 +8,23 @@ import AttractionModal from '../components/attractions/AttractionModal';
 const PuriExcursions: React.FC = () => {
   const [selectedAttraction, setSelectedAttraction] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [attractions, setAttractions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/cms/public/attractions')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setAttractions(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch attractions", err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleOpenModal = (attraction: any) => {
     setSelectedAttraction(attraction);
@@ -36,14 +53,24 @@ const PuriExcursions: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12">
-            {attractions.map((attraction) => (
-              <AttractionCard 
-                key={attraction.id} 
-                attraction={attraction} 
-                onClick={() => handleOpenModal(attraction)}
-              />
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 min-h-[300px]">
+            {loading ? (
+              <div className="col-span-full flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-festival-red"></div>
+              </div>
+            ) : attractions.length > 0 ? (
+              attractions.map((attraction) => (
+                <AttractionCard 
+                  key={attraction._id || attraction.id} 
+                  attraction={attraction} 
+                  onClick={() => handleOpenModal(attraction)}
+                />
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500 py-10">
+                No attractions available. Add them from the admin panel.
+              </div>
+            )}
           </div>
         </main>
 

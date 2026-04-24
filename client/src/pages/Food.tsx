@@ -1,10 +1,39 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
-import { foodCategories } from '@/lib/data';
 import FoodHero from '@/components/food/FoodHero';
 import FoodGrid from '@/components/food/FoodGrid';
 
 const SweetList: React.FC = () => {
+    const [categories, setCategories] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('/api/cms/public/foods')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    // Group by category
+                    const grouped: Record<string, any[]> = {};
+                    data.data.forEach((item: any) => {
+                        if (!grouped[item.category]) grouped[item.category] = [];
+                        grouped[item.category].push(item);
+                    });
+                    
+                    const formattedCategories = Object.keys(grouped).map(catName => ({
+                        category: catName,
+                        items: grouped[catName]
+                    }));
+                    setCategories(formattedCategories);
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Failed to fetch food data", err);
+                setLoading(false);
+            });
+    }, []);
+
     return (
         <Layout>
             <div className="food-page-wrapper min-h-screen bg-[#fffbf0] relative overflow-x-hidden">
@@ -12,8 +41,14 @@ const SweetList: React.FC = () => {
                 <FoodHero />
 
                 {/* Main Content Grid */}
-                <main className="relative z-10">
-                    <FoodGrid categories={foodCategories} />
+                <main className="relative z-10 min-h-[300px]">
+                    {loading ? (
+                        <div className="flex justify-center items-center py-20">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-festival-red"></div>
+                        </div>
+                    ) : (
+                        <FoodGrid categories={categories} />
+                    )}
                 </main>
 
                 {/* Decorative Bottom Section */}

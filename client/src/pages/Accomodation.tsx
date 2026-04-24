@@ -1,13 +1,35 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from 'react';
 import './Accomodation.css';
 import Layout from '../components/Layout';
-import { mathas, hotelsNearTemple, hotelsNearBeach } from '../lib/data';
 import StayHero from '../components/stay/StayHero';
 import StayCard from '../components/stay/StayCard';
 import StaySection from '../components/stay/StaySection';
 import BookingPartners from '../components/stay/BookingPartners';
 
 const HotelsNearJagannathTemple: React.FC = () => {
+  const [stays, setStays] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/cms/public/stays')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setStays(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch stays", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const hotelsNearTemple = stays.filter(s => s.category === 'hotelsNearTemple');
+  const mathas = stays.filter(s => s.category === 'mathas');
+  const hotelsNearBeach = stays.filter(s => s.category === 'hotelsNearBeach');
+
   return (
     <Layout>
       <div className="stay-page-container">
@@ -15,26 +37,34 @@ const HotelsNearJagannathTemple: React.FC = () => {
         <StayHero />
 
         <main className="stay-main-content">
-          {/* Hotels Near Temple Section */}
-          <StaySection 
-            title="Sacred Stays Near the Temple" 
-            subtitle="Find peaceful and spiritually uplifting accommodations within walking distance of Lord Jagannath's abode."
-            places={hotelsNearTemple} 
-          />
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-festival-red"></div>
+            </div>
+          ) : (
+            <>
+              {/* Hotels Near Temple Section */}
+              <StaySection 
+                title="Sacred Stays Near the Temple" 
+                subtitle="Find peaceful and spiritually uplifting accommodations within walking distance of Lord Jagannath's abode."
+                places={hotelsNearTemple} 
+              />
 
-          {/* Mathas Section */}
-          <StaySection 
-            title="Traditional Mathas" 
-            subtitle="Experience ancient monastic hospitality and sacred traditions in the heart of Puri."
-            places={mathas} 
-          />
+              {/* Mathas Section */}
+              <StaySection 
+                title="Traditional Mathas" 
+                subtitle="Experience ancient monastic hospitality and sacred traditions in the heart of Puri."
+                places={mathas} 
+              />
 
-          {/* Beach Hotels Section */}
-          <StaySection 
-            title="Coastal Comfort by the Sea" 
-            subtitle="Relax in premium sea-facing hotels near Puri's golden beach, blending spiritual vibes with coastal breeze."
-            places={hotelsNearBeach} 
-          />
+              {/* Beach Hotels Section */}
+              <StaySection 
+                title="Coastal Comfort by the Sea" 
+                subtitle="Relax in premium sea-facing hotels near Puri's golden beach, blending spiritual vibes with coastal breeze."
+                places={hotelsNearBeach} 
+              />
+            </>
+          )}
 
           {/* Booking Platforms / Partners Section */}
           <BookingPartners />

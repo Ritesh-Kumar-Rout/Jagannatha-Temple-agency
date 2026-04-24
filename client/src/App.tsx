@@ -20,6 +20,11 @@ import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 import { ScrollToTop } from "./components/ui/ScrollToTop";
 import { Preloader } from "./components/ui/Preloader";
 
+// Admin Imports
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -42,11 +47,18 @@ const App = () => (
             <Route path="/food" element={<SweetList />} />
             <Route path="/chat" element={<NotFound />} />
             <Route path="/live" element={<LiveStream />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            </Route>
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <ChatbotWidget />
         </BrowserRouter>
-        <ChatbotWidget />
       </SmoothScroll>
     </TooltipProvider>
   </QueryClientProvider>

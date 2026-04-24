@@ -58,7 +58,7 @@ exports.handleChat = async (req, res) => {
     // 3. Fallback to Gemini AI if Key is present
     if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE') {
       try {
-        const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
         const prompt = `You are a helpful assistant for the Ratha Yatra Festival. 
         Answer this user question about the festival: "${message}". 
         If it is not about Ratha Yatra or Lord Jagannath, politely guide them back to the festival topic. 
@@ -69,7 +69,11 @@ exports.handleChat = async (req, res) => {
         const reply = response.text();
 
         // Log the interaction
-        await ChatLog.create({ userMessage: message, botResponse: reply });
+        try {
+          await ChatLog.create({ userMessage: message, botResponse: reply });
+        } catch (dbError) {
+          console.warn('Could not save chat log, DB might be down.');
+        }
         return res.json({ reply });
       } catch (geminiError) {
         console.error('Gemini API Error:', geminiError);
@@ -79,8 +83,13 @@ exports.handleChat = async (req, res) => {
     // 4. Helpful Local Fallback
     const fallbackReply = "🙏 I'm here to help with Ratha Yatra specifics! You can ask about the Three Chariots, the holy Snana Yatra rituals, or the history of Lord Jagannath. What would you like to know more about?";
     
-    await ChatLog.create({ userMessage: message, botResponse: fallbackReply });
-    res.json({ reply: fallbackReply });
+    try {
+      await ChatLog.create({ userMessage: message, botResponse: fallbackReply });
+    } catch (dbError) {
+      console.warn('Could not save chat log, DB might be down.');
+    }
+    
+    return res.json({ reply: fallbackReply });
 
   } catch (error) {
     console.error('Chat Error:', error);

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { format, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
 import './foldingCalendar.css';
 import Layout from '../components/Layout';
 
@@ -11,83 +12,18 @@ interface FestivalDate {
   traditions?: string[];
 }
 
-const festivalDates: FestivalDate[] = [
-  { 
-    name: 'Snana Purnima', 
-    date: new Date(2025, 5, 11),
-    description: 'Annual bathing ceremony of the deities',
-    significance: 'Purification ritual before the Rath Yatra',
-    traditions: [
-      'Deities bathed with 108 pots of water',
-      'Special herbal preparations used',
-      'Deities dressed in Gajanana (elephant) attire'
-    ]
-  },
-  { 
-    name: 'Rath Yatra', 
-    date: new Date(2025, 5, 27),
-    description: 'Grand chariot festival of Lord Jagannath',
-    significance: 'Journey of the deities to Gundicha Temple',
-    traditions: [
-      'Three massive chariots pulled by devotees',
-      'Millions gather for the procession',
-      'Deities remain at Gundicha Temple for 9 days'
-    ]
-  },
-  { 
-    name: 'Bahuda Yatra', 
-    date: new Date(2025, 6, 5),
-    description: 'Return journey of the chariots',
-    significance: 'Homecoming of the deities',
-    traditions: [
-      'Similar procession as Rath Yatra',
-      'Special stop at Mausi Maa Temple',
-      'Offering of Poda Pitha (burnt offering)'
-    ]
-  },
-  { 
-    name: 'Suna Besha', 
-    date: new Date(2025, 6, 6),
-    description: 'Golden attire of the deities',
-    significance: 'Display of divine opulence',
-    traditions: [
-      'Deities adorned with gold ornaments',
-      'Over 200kg of gold used',
-      'Special evening darshan for devotees'
-    ]
-  },
-  { 
-    name: 'Adhara Pana', 
-    date: new Date(2025, 6, 7),
-    description: 'Offering of sweet drinks to the deities',
-    significance: 'Final offering before return to main temple',
-    traditions: [
-      'Large pots of sweet drink offered',
-      'Pots broken after offering',
-      'Symbolic gesture of completion'
-    ]
-  },
-  { 
-    name: 'Niladri Bije', 
-    date: new Date(2025, 6, 8),
-    description: 'Return to the main temple',
-    significance: 'Conclusion of Rath Yatra festivities',
-    traditions: [
-      'Deities return to sanctum sanctorum',
-      'Lord Jagannath offers rasagulla to Lakshmi',
-      'Special rituals mark the reunion'
-    ]
-  },
-];
+// We will fetch these from the CMS
+// const festivalDates: FestivalDate[] = [];
 
 interface CalendarProps {
   month: number;
   year: number;
   onDayClick?: (day: Date) => void;
   selectedDay?: Date | null;
+  festivalDates: FestivalDate[];
 }
 
-const Calendar: React.FC<CalendarProps> = ({ month, year, onDayClick, selectedDay }) => {
+const Calendar: React.FC<CalendarProps> = ({ month, year, onDayClick, selectedDay, festivalDates }) => {
   const days = eachDayOfInterval({
     start: startOfMonth(new Date(year, month)),
     end: endOfMonth(new Date(year, month)),
@@ -139,6 +75,30 @@ const FestivalCalendar: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [selectedFestival, setSelectedFestival] = useState<FestivalDate | null>(null);
   const [isAutoFolding, setIsAutoFolding] = useState<boolean>(true);
+  const [festivalDates, setFestivalDates] = useState<FestivalDate[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/cms/public/events')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const formattedEvents = data.data.map((event: Record<string, any>) => ({
+            name: event.title,
+            date: new Date(event.date),
+            description: event.description,
+            significance: event.type, // Mapping type to significance for now
+            traditions: []
+          }));
+          setFestivalDates(formattedEvents);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch events", err);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -187,15 +147,17 @@ const FestivalCalendar: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 backface-hidden p-4">
                   <Calendar 
                     month={5} 
-                    year={2025} 
+                    year={2026} 
                     onDayClick={handleDayClick}
                     selectedDay={selectedDay}
+                    festivalDates={festivalDates}
                   />
                   <Calendar 
                     month={6} 
-                    year={2025} 
+                    year={2026} 
                     onDayClick={handleDayClick}
                     selectedDay={selectedDay}
+                    festivalDates={festivalDates}
                   />
                 </div>
               </div>

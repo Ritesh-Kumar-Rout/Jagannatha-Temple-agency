@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Layout from '../components/Layout';
 import {
   Train, BusFront, Plane, MapPin, ChevronRight, Clock,
@@ -8,8 +9,10 @@ import { useState, useEffect } from 'react';
 const Travel = () => {
   const [userLocation, setUserLocation] = useState('');
   const [activeTab, setActiveTab] = useState('transport');
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState<Record<string, any> | null>(null);
   const [isLocating, setIsLocating] = useState(false);
+  const [transportOptions, setTransportOptions] = useState<Record<string, any>[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const getCurrentLocation = () => {
     setIsLocating(true);
@@ -42,58 +45,21 @@ const Travel = () => {
 
   useEffect(() => {
     getCurrentLocation();
+    
+    // Fetch dynamic travel options
+    fetch('/api/cms/public/travels')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setTransportOptions(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch travels", err);
+        setLoading(false);
+      });
   }, []);
-
-  const transportOptions = [
-    {
-      id: 1,
-      icon: <Train className="w-10 h-10" />,
-      title: "Train Services",
-      color: "from-indigo-500 to-blue-600",
-      links: [
-        { name: "IRCTC Official", url: "https://www.irctc.co.in" },
-        { name: "Ixigo Trains", url: "https://www.ixigo.com/trains" },
-        { name: "Train Schedule", url: "https://enquiry.indianrail.gov.in" }
-      ],
-      tips: [
-        "Book tickets 3-4 months in advance during Rath Yatra season",
-        "Puri has direct trains from major Indian cities",
-        "Consider Shatabdi Express for comfort from Kolkata/Bhubaneswar"
-      ]
-    },
-    {
-      id: 2,
-      icon: <BusFront className="w-10 h-10" />,
-      title: "Bus Services",
-      color: "from-green-500 to-teal-600",
-      links: [
-        { name: "Mo Bus", url: "https://www.capitalregiontransport.in/" },
-        { name: "OSRTC", url: "https://osrtc.org/#/" },
-        { name: "Private Buses", url: "https://www.redbus.in" }
-      ],
-      tips: [
-        "AC Volvo buses available from Bhubaneswar (1.5hrs)",
-        "Night buses comfortable from Kolkata (6hrs)",
-        "Book return tickets simultaneously during peak seasons"
-      ]
-    },
-    {
-      id: 3,
-      icon: <Plane className="w-10 h-10" />,
-      title: "Flight Booking",
-      color: "from-purple-500 to-fuchsia-600",
-      links: [
-        { name: "MakeMyTrip", url: "https://www.makemytrip.com/flights/" },
-        { name: "Air India", url: "https://www.airindia.in" },
-        { name: "IndiGo", url: "https://www.goindigo.in" }
-      ],
-      tips: [
-        "Nearest airport is Biju Patnaik (Bhubaneswar)",
-        "Pre-book airport taxi to Puri (approx ₹1500)",
-        "Morning flights recommended to avoid delays"
-      ]
-    }
-  ];
 
   const travelEssentials = [
     {
@@ -164,50 +130,54 @@ const Travel = () => {
         <div className="py-12 px-5 md:px-20 max-w-7xl mx-auto">
           {activeTab === 'transport' && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                {transportOptions.map((option) => (
-                  <div
-                    key={option.id}
-                    className={`relative overflow-hidden group rounded-2xl shadow-xl bg-white transition-all duration-300 hover:shadow-2xl ${selectedOption === option.id ? 'ring-4 ring-indigo-400 scale-[1.02]' : ''}`}
-                    onClick={() => setSelectedOption(selectedOption === option.id ? null : option.id)}
-                  >
-                    <div className={`absolute inset-x-0 top-0 h-2 bg-gradient-to-r ${option.color}`}></div>
-                    <div className="p-6">
-                      <div className="flex items-center mb-5">
-                        <div className={`p-3 rounded-lg bg-gradient-to-br ${option.color} text-white mr-4`}>
-                          {option.icon}
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800">{option.title}</h3>
-                      </div>
-                      <ul className="space-y-3 mb-6">
-                        {option.links.map((link, index) => (
-                          <li key={index} className="flex items-center group">
-                            <ChevronRight className="w-4 h-4 text-indigo-400 mr-2 group-hover:translate-x-1 transition-transform" />
-                            <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-indigo-600 hover:underline">
-                              {link.name}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                      {selectedOption === option.id && (
-                        <div className="mt-4 pt-4 border-t border-gray-100">
-                          <h4 className="font-medium text-gray-800 mb-2 flex items-center">
-                            <Clock className="w-4 h-4 mr-2 text-indigo-500" />
-                            Pro Tips
-                          </h4>
-                          <ul className="space-y-2 text-sm text-gray-600">
-                            {option.tips.map((tip, i) => (
-                              <li key={i} className="flex">
-                                <span className="text-indigo-500 mr-2">•</span>
-                                {tip}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 min-h-[200px]">
+                {loading ? (
+                  <div className="col-span-full flex justify-center items-center py-20">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
                   </div>
-                ))}
+                ) : transportOptions.length > 0 ? (
+                  transportOptions.map((option) => (
+                    <div
+                      key={option._id || option.id}
+                      className={`relative overflow-hidden group rounded-2xl shadow-xl bg-white transition-all duration-300 hover:shadow-2xl ${selectedOption === (option._id || option.id) ? 'ring-4 ring-indigo-400 scale-[1.02]' : ''}`}
+                      onClick={() => setSelectedOption(selectedOption === (option._id || option.id) ? null : (option._id || option.id))}
+                    >
+                      <div className={`absolute inset-x-0 top-0 h-2 bg-gradient-to-r ${option.transport_type === 'train' ? 'from-indigo-500 to-blue-600' : option.transport_type === 'flight' ? 'from-purple-500 to-fuchsia-600' : 'from-green-500 to-teal-600'}`}></div>
+                      <div className="p-6">
+                        <div className="flex items-center mb-5">
+                          <div className={`p-3 rounded-lg bg-gradient-to-br ${option.transport_type === 'train' ? 'from-indigo-500 to-blue-600' : option.transport_type === 'flight' ? 'from-purple-500 to-fuchsia-600' : 'from-green-500 to-teal-600'} text-white mr-4`}>
+                            {option.transport_type === 'train' ? <Train className="w-10 h-10" /> : option.transport_type === 'flight' ? <Plane className="w-10 h-10" /> : <BusFront className="w-10 h-10" />}
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-800">{option.title}</h3>
+                        </div>
+                        <p className="text-gray-600 mb-6">{option.description}</p>
+                        
+                        {selectedOption === (option._id || option.id) && (
+                          <div className="mt-4 pt-4 border-t border-gray-100">
+                            <h4 className="font-medium text-gray-800 mb-2 flex items-center">
+                              <Clock className="w-4 h-4 mr-2 text-indigo-500" />
+                              Details
+                            </h4>
+                            <ul className="space-y-2 text-sm text-gray-600">
+                              <li className="flex">
+                                <span className="text-indigo-500 mr-2">•</span>
+                                Timing: {option.timing}
+                              </li>
+                              <li className="flex">
+                                <span className="text-indigo-500 mr-2">•</span>
+                                Price: {option.price}
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center text-gray-500 py-10">
+                    No travel options available. Add them from the admin panel.
+                  </div>
+                )}
               </div>
 
               {/* Route Planner */}
