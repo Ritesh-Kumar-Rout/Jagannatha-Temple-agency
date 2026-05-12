@@ -18,7 +18,8 @@ export const FloatingElement = ({
 }: FloatingElementProps) => {
   return (
     <motion.div
-      className={className}
+      className={`${className} gpu-accel`}
+      style={{ willChange: "transform" }}
       animate={{
         y: [0, -yOffset, 0],
       }}

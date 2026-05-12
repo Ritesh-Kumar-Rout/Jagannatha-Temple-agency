@@ -19,7 +19,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ item }) => {
       {/* Image Container with Zoom Effect */}
       <div className="relative h-64 overflow-hidden">
         <img 
-          src={`/${item.image}`} 
+          src={item.image.startsWith('http') ? item.image : `/${item.image}`} 
           alt={item.name} 
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {

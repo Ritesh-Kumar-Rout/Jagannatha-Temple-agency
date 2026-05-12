@@ -20,7 +20,7 @@ const RitualCard: React.FC<RitualCardProps> = ({ ritual, onClick }) => {
     >
       <div className="card-image-box relative h-60 overflow-hidden">
         <img 
-          src={`/${ritual.image}`} 
+          src={ritual.image.startsWith('http') ? ritual.image : `/${ritual.image}`} 
           alt={ritual.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {

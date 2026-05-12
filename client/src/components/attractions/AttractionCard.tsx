@@ -21,7 +21,7 @@ const AttractionCard: React.FC<AttractionCardProps> = ({ attraction, onClick }) 
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden">
         <img 
-          src={`/${attraction.image}`} 
+          src={attraction.image.startsWith('http') ? attraction.image : `/${attraction.image}`} 
           alt={attraction.title} 
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {

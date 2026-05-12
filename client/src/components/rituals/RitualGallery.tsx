@@ -18,7 +18,7 @@ const RitualGallery: React.FC<RitualGalleryProps> = ({ images, title }) => {
             className="group relative h-56 overflow-hidden rounded-2xl border border-gray-100 shadow-sm"
           >
             <img 
-              src={`/${img}`} 
+              src={img.startsWith('http') ? img : `/${img}`} 
               alt={`${title} Gallery ${idx + 1}`} 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               onError={(e) => {

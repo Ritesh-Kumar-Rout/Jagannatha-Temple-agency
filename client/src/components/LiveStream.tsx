@@ -25,11 +25,12 @@ const LiveStream = () => {
 
           <FloatingElement duration={8} yOffset={8}>
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 20 }}
-              className="bg-black/90 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.3)] max-w-5xl mx-auto border border-white/10 relative"
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ type: "tween", duration: 0.8, ease: "easeOut" }}
+              className="bg-black/90 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.3)] max-w-5xl mx-auto border border-white/10 relative gpu-accel"
+              style={{ backfaceVisibility: "hidden", transformStyle: "preserve-3d" }}
             >
               <div className="absolute top-0 right-0 w-96 h-96 bg-festival-saffron/20 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
               <div className="absolute bottom-0 left-0 w-96 h-96 bg-festival-red/20 rounded-full blur-[100px] -z-10 -translate-x-1/2 translate-y-1/2"></div>
@@ -40,7 +41,8 @@ const LiveStream = () => {
                     <iframe
                       width="100%"
                       height="100%"
-                      className="absolute inset-0"
+                      className="absolute inset-0 gpu-accel"
+                      style={{ willChange: "transform" }}
                       data-lenis-prevent="true"
                       src="https://www.youtube.com/embed/_pplsMPNVmQ?si=6uxDBBF6W7mhlcBR"
                       title="YouTube video player"

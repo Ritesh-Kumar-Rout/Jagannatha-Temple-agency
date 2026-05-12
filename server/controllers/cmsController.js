@@ -1,23 +1,22 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { uploadFromBuffer } = require('../services/cloudinaryHelper');
 
-// Configure Multer for local storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
+// Configure Multer for memory storage
+const storage = multer.memoryStorage();
+
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
   },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only images are allowed!'), false);
+    }
   }
 });
-
-const upload = multer({ storage });
 
 // Generic CRUD Factory
 const createController = (Model) => {
@@ -45,10 +44,13 @@ const createController = (Model) => {
     create: async (req, res) => {
       try {
         const data = { ...req.body };
+        
         if (req.file) {
-          data.image = '/uploads/' + req.file.filename;
+          console.log('Uploading image to Cloudinary...');
+          const uploadResult = await uploadFromBuffer(req.file.buffer);
+          data.image = uploadResult.secure_url;
+          console.log('Upload successful:', data.image);
         } else if (req.body.image) {
-          // Fallback if image was passed as string (from seed script or existing url)
           data.image = req.body.image;
         }
         
@@ -68,8 +70,12 @@ const createController = (Model) => {
     update: async (req, res) => {
       try {
         const data = { ...req.body };
+        
         if (req.file) {
-          data.image = '/uploads/' + req.file.filename;
+          console.log('Uploading new image to Cloudinary...');
+          const uploadResult = await uploadFromBuffer(req.file.buffer);
+          data.image = uploadResult.secure_url;
+          console.log('Update upload successful:', data.image);
         }
         
         if (data.gallery && typeof data.gallery === 'string') {
@@ -80,6 +86,7 @@ const createController = (Model) => {
         if (!item) return res.status(404).json({ success: false, message: 'Item not found' });
         res.status(200).json({ success: true, data: item });
       } catch (error) {
+        console.error('Error updating item:', error);
         res.status(400).json({ success: false, message: error.message });
       }
     },

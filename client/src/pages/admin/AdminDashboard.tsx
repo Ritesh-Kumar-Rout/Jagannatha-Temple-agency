@@ -111,13 +111,13 @@ const AdminDashboard = () => {
       <motion.aside 
         initial={{ x: -250 }}
         animate={{ x: 0 }}
-        className="w-64 bg-neutral-900 border-r border-neutral-800 hidden md:flex flex-col"
+        className="w-64 bg-neutral-900 border-r border-neutral-800 hidden md:flex flex-col gpu-accel"
       >
         <div className="p-6 border-b border-neutral-800 flex items-center justify-center">
           <Logo size="sm" showText={true} />
         </div>
         
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar overscroll-contain touch-pan-y" data-lenis-prevent="true">
           <button 
             onClick={() => setActiveTab("dashboard")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${activeTab === "dashboard" ? "bg-festival-gold/10 text-festival-gold" : "text-neutral-400 hover:text-white hover:bg-neutral-800"}`}
@@ -240,7 +240,7 @@ const AdminDashboard = () => {
         </header>
 
         {/* Main scrollable content */}
-        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8 custom-scrollbar overscroll-contain touch-pan-y" data-lenis-prevent="true">
           <AnimatePresence mode="wait">
             {activeTab === "dashboard" ? (
               <motion.div 
