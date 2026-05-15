@@ -3,23 +3,33 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "::",
+    host: "0.0.0.0",
     port: 3000,
+
+    // ONLY for local development
     proxy: {
-      "/api": "http://localhost:8080",
+      "/api": {
+        target: "https://jagannatha-temple-agency.onrender.com",
+        changeOrigin: true,
+        secure: true,
+      },
     },
   },
+
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === "development" && componentTagger(),
   ].filter(Boolean),
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+
+  build: {
+    outDir: "dist",
   },
 }));
