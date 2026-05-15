@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors({
-  origin: ['https://puri-verse.onrender.com','http://localhost:3000', 'http://localhost:5173', process.env.CLIENT_URL].filter(Boolean),
+  origin: ['https://puri-verse.onrender.com', 'http://localhost:3000', 'http://localhost:5173', process.env.CLIENT_URL].filter(Boolean),
   credentials: true, // Required for cookies
 }));
 app.use(express.json());
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
 
   // Handle SPA routing: return index.html for all non-API routes
-  app.use((req, res) => {
+  app.get(/^\/(?!api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, "../client/dist/index.html"));
   });
 }
