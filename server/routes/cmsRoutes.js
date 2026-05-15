@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+console.log('CMS Routes loading...');
 const { protectAdmin } = require('../middleware/authMiddleware');
 const { upload, createController } = require('../controllers/cmsController');
 

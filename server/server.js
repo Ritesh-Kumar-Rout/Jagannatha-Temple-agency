@@ -21,7 +21,16 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+// Request logging for debugging
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
 // Routes
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'API is working' });
+});
 app.use('/api/chat', chatRoutes);
 app.use('/api/temple', templeRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -37,8 +46,10 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
 
   // Handle SPA routing: return index.html for all non-API routes
-  app.get(/^\/(?!api).*/, (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+    }
   });
 }
 
