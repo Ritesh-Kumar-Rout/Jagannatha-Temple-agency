@@ -31,6 +31,19 @@ app.use('/api/cms', cmsRoutes);
 // Serve static uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the client/dist directory
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+
+  // Handle SPA routing: return index.html for all non-API routes
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    }
+  });
+}
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ratha_yatra_chatbot')
   .then(() => console.log('MongoDB connected'))

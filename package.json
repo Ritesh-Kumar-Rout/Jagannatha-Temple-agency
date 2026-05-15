@@ -1,0 +1,16 @@
+{
+  "name": "jagannatha-temple-agency",
+  "version": "1.0.0",
+  "description": "Jagannatha Temple Agency Full Stack Application",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build",
+    "start": "node server/server.js",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
