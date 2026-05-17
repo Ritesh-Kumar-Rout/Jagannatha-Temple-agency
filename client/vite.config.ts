@@ -1,35 +1,38 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "0.0.0.0",
-    port: 3000,
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
 
-    // ONLY for local development
-    proxy: {
-      "/api": {
-        target: "https://jagannatha-temple-agency.onrender.com",
-        changeOrigin: true,
-        secure: true,
+  return {
+    server: {
+      host: "0.0.0.0",
+      port: 3000,
+
+      proxy: {
+        "/api": {
+          target: env.VITE_API_TARGET || "http://localhost:8080",
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
-  },
 
-  plugins: [
-    react(),
-    mode === "development" && componentTagger(),
-  ].filter(Boolean),
+    plugins: [
+      react(),
+      mode === "development" && componentTagger(),
+    ].filter(Boolean),
 
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
     },
-  },
 
-  build: {
-    outDir: "dist",
-  },
-}));
+    build: {
+      outDir: "dist",
+    },
+  };
+});

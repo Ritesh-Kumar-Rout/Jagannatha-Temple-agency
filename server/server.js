@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors({
-  origin: ['https://puri-verse.onrender.com', 'http://localhost:3000', 'http://localhost:5173', process.env.CLIENT_URL].filter(Boolean),
+  origin: ['https://jagannatha-temple-agency-1.onrender.com','https://puri-verse.onrender.com', 'http://localhost:3000', 'http://localhost:5173', process.env.CLIENT_URL].filter(Boolean),
   credentials: true, // Required for cookies
 }));
 app.use(express.json());
@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ratha_yatra_chatbot')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 

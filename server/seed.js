@@ -35,7 +35,7 @@ const seedData = [
   }
 ];
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ratha_yatra_chatbot')
+mongoose.connect(process.env.MONGODB_URI)
   .then(async () => {
     console.log('Connected to MongoDB for seeding...');
     await FestivalInfo.deleteMany({});
