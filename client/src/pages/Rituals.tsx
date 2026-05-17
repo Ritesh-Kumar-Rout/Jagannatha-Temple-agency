@@ -5,6 +5,7 @@ import { Flower2, Loader2 } from 'lucide-react';
 import './Rituals.css';
 import RitualCard from '../components/rituals/RitualCard';
 import RitualDetailsModal from '../components/rituals/RitualDetailsModal';
+import { rituals as fallbackRituals } from '../lib/data';
 
 const JagannathTempleRituals = () => {
   const [showModal, setShowModal] = useState(false);
@@ -17,12 +18,13 @@ const JagannathTempleRituals = () => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setRituals(data.data);
+          setRituals(data.data.length > 0 ? data.data : fallbackRituals);
         }
         setLoading(false);
       })
       .catch(err => {
         console.error("Failed to fetch rituals", err);
+        setRituals(fallbackRituals);
         setLoading(false);
       });
   }, []);

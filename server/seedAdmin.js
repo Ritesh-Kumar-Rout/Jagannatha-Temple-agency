@@ -5,8 +5,10 @@ const Admin = require('./models/Admin'); // Adjust path if needed
 
 const seedAdmin = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ratha_yatra_chatbot');
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log('MongoDB connected for seeding.');
+
+    const shouldResetPassword = process.argv.includes('--reset-password');
 
     // Default credentials
     const defaultEmail = 'admin@jagannath.com';
@@ -19,7 +21,23 @@ const seedAdmin = async () => {
     });
 
     if (existingAdmin) {
-      console.log('Admin user already exists. Seed skipped.');
+      if (!shouldResetPassword) {
+        console.log('Admin user already exists. Seed skipped.');
+        console.log('Run `npm run seed:admin:reset` to reset the default admin password.');
+        process.exit(0);
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      existingAdmin.password = await bcrypt.hash(defaultPassword, salt);
+      existingAdmin.email = existingAdmin.email || defaultEmail;
+      existingAdmin.mobile = existingAdmin.mobile || defaultMobile;
+      existingAdmin.role = 'admin';
+      await existingAdmin.save();
+
+      console.log('Admin password reset successfully!');
+      console.log(`Email: ${existingAdmin.email}`);
+      console.log(`Mobile: ${existingAdmin.mobile}`);
+      console.log(`Password: ${defaultPassword}`);
       process.exit(0);
     }
 

@@ -158,6 +158,13 @@ const AdminDashboard = () => {
             <UserCircle className="w-5 h-5" />
             Profile Settings
           </button>
+          <button
+            onClick={() => navigate("/")}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors text-neutral-400 hover:text-white hover:bg-neutral-800"
+          >
+            <Home className="w-5 h-5" />
+            Home Page
+          </button>
         </nav>
 
         <div className="p-4 border-t border-neutral-800">
