@@ -31,14 +31,13 @@ app.use('/api/cms', cmsRoutes);
 // Serve static uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Serve frontend in production
+app.set('trust proxy', 1);
+
 if (process.env.NODE_ENV === 'production') {
-  // Serve static files from the client/dist directory
   app.use(express.static(path.join(__dirname, '../client/dist')));
 
-  // Handle SPA routing: return index.html for all non-API routes
   app.get(/^\/(?!api).*/, (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
   });
 }
 
