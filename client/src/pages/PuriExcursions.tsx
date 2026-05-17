@@ -4,6 +4,7 @@ import Layout from '../components/Layout';
 import AttractionHero from '../components/attractions/AttractionHero';
 import AttractionCard from '../components/attractions/AttractionCard';
 import AttractionModal from '../components/attractions/AttractionModal';
+import { apiFetch } from '@/lib/api';
 
 const PuriExcursions: React.FC = () => {
   const [selectedAttraction, setSelectedAttraction] = useState<any | null>(null);
@@ -12,7 +13,7 @@ const PuriExcursions: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/cms/public/attractions')
+    apiFetch('/api/cms/public/attractions')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

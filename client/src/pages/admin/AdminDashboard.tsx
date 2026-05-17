@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "@/components/Logo";
 import GenericCMS from "@/components/admin/GenericCMS";
+import { apiFetch } from "@/lib/api";
 
 interface AdminProfile {
   id: string;
@@ -40,7 +41,7 @@ const AdminDashboard = () => {
 
   const fetchMe = async () => {
     try {
-      const response = await fetch("/api/auth/me");
+      const response = await apiFetch("/api/auth/me");
       const data = await response.json();
       if (data.success && data.admin) {
         setAdmin(data.admin);
@@ -57,7 +58,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("/api/auth/dashboard-stats");
+      const response = await apiFetch("/api/auth/dashboard-stats");
       const data = await response.json();
       if (data.success && data.stats) {
         setStats(data.stats);
@@ -69,7 +70,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("/api/auth/logout", {
+      const response = await apiFetch("/api/auth/logout", {
         method: "POST",
       });
       if (response.ok) {
@@ -85,7 +86,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     setIsSaving(true);
     try {
-      const response = await fetch("/api/auth/me", {
+      const response = await apiFetch("/api/auth/me", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileForm),

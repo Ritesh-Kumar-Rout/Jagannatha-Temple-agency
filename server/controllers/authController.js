@@ -4,6 +4,11 @@ const jwt = require('jsonwebtoken');
 
 // Ensure you have JWT_SECRET in your .env file
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_please_change';
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+};
 
 const login = async (req, res) => {
   try {
@@ -44,11 +49,8 @@ const login = async (req, res) => {
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
 
     // Set cookie
-    // In production, secure should be true
     res.cookie('admin_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      ...cookieOptions,
       maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
     });
 
@@ -71,9 +73,7 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
   res.clearCookie('admin_token', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    ...cookieOptions,
   });
   res.status(200).json({ success: true, message: 'Logged out successfully.' });
 };
