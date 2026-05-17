@@ -5,6 +5,7 @@ import ChatMessage from './ChatMessage';
 import QuickQuestions from './QuickQuestions';
 import TypingIndicator from './TypingIndicator';
 import { Magnetic } from '../ui/Magnetic';
+import { apiFetch } from '@/lib/api';
 
 interface Message {
   userMessage: string;
@@ -58,7 +59,7 @@ const ChatWindow: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text })

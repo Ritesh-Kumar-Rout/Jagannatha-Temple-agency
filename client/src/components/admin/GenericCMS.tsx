@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, X, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiFetch, apiUrl } from '@/lib/api';
 
 interface Field {
   name: string;
@@ -45,9 +46,7 @@ const GenericCMS: React.FC<GenericCMSProps> = ({ title, endpoint, fields }) => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`/api/cms/public/${endpoint}`, {
-        credentials: 'include' // Allow cookies if needed
-      });
+      const res = await apiFetch(`/api/cms/public/${endpoint}`);
       if (!res.ok) {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
@@ -112,10 +111,9 @@ const GenericCMS: React.FC<GenericCMSProps> = ({ title, endpoint, fields }) => {
         ? `/api/cms/admin/${endpoint}/${editingItem._id}` 
         : `/api/cms/admin/${endpoint}`;
         
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         body: dataToSend,
-        credentials: 'include'
       });
       
       const text = await res.text();
@@ -145,9 +143,8 @@ const GenericCMS: React.FC<GenericCMSProps> = ({ title, endpoint, fields }) => {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this item?')) return;
     try {
-      const res = await fetch(`/api/cms/admin/${endpoint}/${id}`, { 
+      const res = await apiFetch(`/api/cms/admin/${endpoint}/${id}`, { 
         method: 'DELETE',
-        credentials: 'include' 
       });
       const text = await res.text();
       let json;
@@ -194,7 +191,7 @@ const GenericCMS: React.FC<GenericCMSProps> = ({ title, endpoint, fields }) => {
               <tr key={item._id} className="border-b border-neutral-800/50 hover:bg-neutral-800/20 transition-colors">
                 <td className="py-3">
                   {item.image ? (
-                    <img src={item.image.startsWith('http') ? item.image : `/${item.image.startsWith('/') ? item.image.slice(1) : item.image}`} alt="thumb" className="w-12 h-12 rounded-lg object-cover" />
+                    <img src={item.image.startsWith('http') ? item.image : item.image.startsWith('uploads/') || item.image.startsWith('/uploads/') ? apiUrl(item.image) : `/${item.image.startsWith('/') ? item.image.slice(1) : item.image}`} alt="thumb" className="w-12 h-12 rounded-lg object-cover" />
                   ) : (
                     <div className="w-12 h-12 rounded-lg bg-neutral-800 flex items-center justify-center">
                       <ImageIcon className="w-5 h-5 text-neutral-500" />
@@ -300,7 +297,7 @@ const GenericCMS: React.FC<GenericCMSProps> = ({ title, endpoint, fields }) => {
                             </div>
                           ) : formData[field.name] && (
                             <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950">
-                              <img src={formData[field.name].startsWith('http') ? formData[field.name] : `/${formData[field.name].startsWith('/') ? formData[field.name].slice(1) : formData[field.name]}`} alt="current" className="w-full h-full object-cover" />
+                              <img src={formData[field.name].startsWith('http') ? formData[field.name] : formData[field.name].startsWith('uploads/') || formData[field.name].startsWith('/uploads/') ? apiUrl(formData[field.name]) : `/${formData[field.name].startsWith('/') ? formData[field.name].slice(1) : formData[field.name]}`} alt="current" className="w-full h-full object-cover" />
                             </div>
                           )}
                           <div className="flex items-center justify-center w-full">

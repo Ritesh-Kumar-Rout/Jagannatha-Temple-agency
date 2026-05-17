@@ -7,6 +7,7 @@ import { Eye, EyeOff, Lock, User, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
+import { apiFetch } from "@/lib/api";
 
 // Schema for validation
 const loginSchema = z.object({
@@ -32,7 +33,7 @@ const AdminLogin = () => {
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await apiFetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

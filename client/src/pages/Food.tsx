@@ -3,13 +3,14 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import FoodHero from '@/components/food/FoodHero';
 import FoodGrid from '@/components/food/FoodGrid';
+import { apiFetch } from '@/lib/api';
 
 const SweetList: React.FC = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/cms/public/foods')
+        apiFetch('/api/cms/public/foods')
             .then(res => res.json())
             .then(data => {
                 if (data.success && data.data) {

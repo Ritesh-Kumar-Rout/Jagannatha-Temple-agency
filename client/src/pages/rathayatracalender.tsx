@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
 import './foldingCalendar.css';
 import Layout from '../components/Layout';
+import { apiFetch } from '@/lib/api';
 
 interface FestivalDate {
   name: string;
@@ -79,7 +80,7 @@ const FestivalCalendar: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/cms/public/events')
+    apiFetch('/api/cms/public/events')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

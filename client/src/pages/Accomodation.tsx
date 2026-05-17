@@ -6,13 +6,14 @@ import StayHero from '../components/stay/StayHero';
 import StayCard from '../components/stay/StayCard';
 import StaySection from '../components/stay/StaySection';
 import BookingPartners from '../components/stay/BookingPartners';
+import { apiFetch } from '@/lib/api';
 
 const HotelsNearJagannathTemple: React.FC = () => {
   const [stays, setStays] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/cms/public/stays')
+    apiFetch('/api/cms/public/stays')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

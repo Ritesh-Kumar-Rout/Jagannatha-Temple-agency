@@ -5,6 +5,7 @@ import {
   Hotel, Luggage, Users, Sun
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { apiFetch } from '@/lib/api';
 
 const Travel = () => {
   const [userLocation, setUserLocation] = useState('');
@@ -47,7 +48,7 @@ const Travel = () => {
     getCurrentLocation();
     
     // Fetch dynamic travel options
-    fetch('/api/cms/public/travels')
+    apiFetch('/api/cms/public/travels')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

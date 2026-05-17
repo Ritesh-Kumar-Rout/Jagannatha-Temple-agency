@@ -6,6 +6,7 @@ import './Rituals.css';
 import RitualCard from '../components/rituals/RitualCard';
 import RitualDetailsModal from '../components/rituals/RitualDetailsModal';
 import { rituals as fallbackRituals } from '../lib/data';
+import { apiFetch } from '../lib/api';
 
 const JagannathTempleRituals = () => {
   const [showModal, setShowModal] = useState(false);
@@ -14,7 +15,7 @@ const JagannathTempleRituals = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/cms/public/rituals')
+    apiFetch('/api/cms/public/rituals')
       .then(res => res.json())
       .then(data => {
         if (data.success) {
